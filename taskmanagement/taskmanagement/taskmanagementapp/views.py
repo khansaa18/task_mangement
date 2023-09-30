@@ -12,7 +12,7 @@ def index(request):
     if 'userid' not in request.session:
         return redirect('login')
 
-    if (request.session['username'] == "admin"):
+    if request.session['username'] == "admin":
         total_assigned_task = len(TaskModel.objects.filter(assigned_to_id=None))
         total_completed_tasks = len(
             TaskModel.objects.filter(Q(assigned_to_id=None) & Q(is_completed=True)))
@@ -21,18 +21,21 @@ def index(request):
         total_in_active_task = len(TaskModel.objects.filter(
             Q(assigned_to_id=None) & Q(is_in_progress=False) & Q(is_completed=False)))
     else:
-        total_assigned_task = len(TaskModel.objects.filter(assigned_to_id= request.session['userid']))
-        total_completed_tasks = len(TaskModel.objects.filter(Q(assigned_to_id=request.session['userid']) & Q(is_completed=True)))
-        total_in_progress_task = len(TaskModel.objects.filter(Q(assigned_to_id=request.session['userid']) & Q(is_in_progress=True) & Q(is_completed=False)))
-        total_in_active_task = len(TaskModel.objects.filter(Q(assigned_to_id=request.session['userid']) & Q(is_in_progress=False) & Q(is_completed=False)))
+        total_assigned_task = len(TaskModel.objects.filter(assigned_to_id=request.session['userid']))
+        total_completed_tasks = len(TaskModel.objects.filter(Q(assigned_to_id=request.session['userid'])
+                                                             & Q(is_completed=True)))
+        total_in_progress_task = len(TaskModel.objects.filter(Q(assigned_to_id=request.session['userid'])
+                                                              & Q(is_in_progress=True) & Q(is_completed=False)))
+        total_in_active_task = len(TaskModel.objects.filter(Q(assigned_to_id=request.session['userid'])
+                                                            & Q(is_in_progress=False) & Q(is_completed=False)))
 
     context = {
-        'totalassignedtask':total_assigned_task,
+        'totalassignedtask': total_assigned_task,
         'totalcompletedtasks': total_completed_tasks,
         'totalinprogresstask': total_in_progress_task,
-        'totalinactivetask' : total_in_active_task
+        'totalinactivetask': total_in_active_task
     }
-    return render(request, 'dashboard/dashboard.html',context=context)
+    return render(request, 'dashboard/dashboard.html', context=context)
 
 
 def login_view(request):
@@ -77,6 +80,9 @@ def register_user(request):
     if edit_user_id:
         user_instance = get_object_or_404(CustomUser, id=edit_user_id)
 
+    if user_instance is None:
+        user_instance = CustomUser()
+
     if request.method == 'POST':
         user_instance.set_password('password')
         form = CustomUserCreationForm(request.POST, instance=user_instance)
@@ -102,7 +108,7 @@ def add_task(request):
         return redirect('login')
 
     assignees = []
-    if(request.session['username'] == "admin"):
+    if (request.session['username'] == "admin"):
         admin_user = User.objects.filter(username=request.session['username']).first()
         print(admin_user)
         assignees.append((admin_user.username, admin_user.username))
@@ -135,7 +141,8 @@ def add_task(request):
             title=request.POST.get('title'),
             due_date=request.POST.get('due_date'),
             priority=request.POST.get('priority'),
-            assigned_to=user_instance
+            assigned_to=user_instance,
+            comments=request.POST.get('comments')
         )
         print(task.due_date)
         task.save()
@@ -160,7 +167,8 @@ def my_task(request):
     if (request.session['username'] == "admin"):
         tasks = TaskModel.objects.filter(Q(assigned_to_id=None) & Q(is_completed=False)).order_by('due_date')
     else:
-        tasks = TaskModel.objects.filter(Q(assigned_to_id=request.session['userid']) & Q(is_completed=False)).order_by('due_date')
+        tasks = TaskModel.objects.filter(Q(assigned_to_id=request.session['userid']) & Q(is_completed=False)).order_by(
+            'due_date')
 
     paginator = Paginator(tasks, 10)
     try:
@@ -184,9 +192,13 @@ def my_task(request):
 
 def delete_task(request, taskid):
     pagenumber = request.GET.get('page')
+    isUserTask = request.GET.get('isUserTask')
 
     task_instance = get_object_or_404(TaskModel, id=taskid)
     task_instance.delete()
+
+    if isUserTask:
+        return redirect(f'/usertasks?page={pagenumber}')
 
     return redirect(f'/mytasks?page={pagenumber}')
 

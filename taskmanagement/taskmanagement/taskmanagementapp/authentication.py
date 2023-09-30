@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 from .models import CustomUser
 
+
 class CustomUserModelBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         try:
