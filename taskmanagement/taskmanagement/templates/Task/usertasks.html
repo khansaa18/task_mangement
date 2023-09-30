@@ -1,0 +1,142 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+{% block styles %}
+
+
+{% endblock styles%}
+
+
+{% block heading %}Tasks{% endblock heading %}
+
+{% block body %}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Employee Tasks</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <div id="dataTable_wrapper" class="dataTables_wrapper dt-bootstrap4">
+                <div class="row">
+                    <div class="container">
+                        <form method="GET">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="col-md-4 mb-6">
+                                    {{ searchForm.user.label_tag }}
+                                    {{ searchForm.user }}
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <button style="margin-top:32px" type="submit" class="btn btn-primary">Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0"
+                                   role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+                                <thead>
+                                <tr role="row">
+                                    <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1"
+                                        colspan="1" style="width: 145px;" aria-sort="ascending"
+                                        aria-label="Name: activate to sort column descending">Title
+                                    </th>
+                                    <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1"
+                                        colspan="1" style="width: 250px;" aria-sort="ascending"
+                                        aria-label="Name: activate to sort column descending">Due Date
+                                    </th>
+                                    <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1"
+                                        colspan="1" style="width: 700px;" aria-sort="ascending"
+                                        aria-label="Name: activate to sort column descending">Priority
+                                    </th>
+                                    <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1"
+                                        colspan="1" style="width: 700px;" aria-sort="ascending"
+                                        aria-label="Name: activate to sort column descending">Status
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in page_obj %}
+                                <tr>
+                                    <td>{{ item.title }}</td>
+                                    <td>{{ item.due_date }}</td>
+                                    <td>
+                                        {% if item.priority == "High" %}
+                                            <span class="badge badge-danger">High</span>
+                                        {% endif %}
+                                        {% if item.priority == "Medium" %}
+                                            <span class="badge badge-warning">Medium</span>
+                                        {% endif %}
+                                        {% if item.priority == "Low" %}
+                                            <span class="badge badge-success">Low</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if item.is_completed == True %}
+                                            <span class="badge badge-success">Completed</span>
+                                        {% elif item.is_in_progress == True %}
+                                        <span class="badge badge-primary">In Progress</span>
+                                        {% else %}
+                                            <span class="badge badge-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                   <div class="row" style="display:contents">
+                        <div class="col-sm-12 col-md-5">
+                            {% if totalitems > 10 %}
+                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 10
+                                    of {{ totalitems }} entries
+                                </div>
+                            {% endif %}
+
+                            {% if totalitems <= 10 %}
+                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing
+                                    {{totalitems}}
+                                    of {{ totalitems }} entries
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-sm-12 col-md-7">
+                            <div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate">
+                                <ul class="pagination">
+                                    {% if page_obj.number > 1 %}
+                                    <li class="paginate_button page-item previous" id="dataTable_previous">
+                                        <a href="?page={{ page_obj.previous_page_number }}"
+                                           aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a>
+                                    </li>
+                                    {% endif %}
+                                    {% for i in pagerange|slice:":5" %}
+                                    <li class="paginate_button page-item active">
+                                        <a href="?page={{ i }}"
+                                           aria-controls="dataTable" tabindex="0" class="page-link">{{ i }}</a>
+                                    </li>
+                                    {% endfor %}
+                                    {% if page_obj.number < page_obj.paginator.num_pages %}
+                                    <li class="paginate_button page-item next" id="dataTable_next">
+                                        <a href="?page={{ page_obj.next_page_number }}"
+                                           aria-controls="dataTable" data-dt-idx="7" tabindex="0"
+                                           class="page-link">Next</a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock body %}
+

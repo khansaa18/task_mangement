@@ -1,0 +1,69 @@
+{% extends 'layout/base.html' %}
+{% load static %}
+
+
+{% block styles %}
+
+
+{% endblock styles%}
+
+
+{% block heading %}Users{% endblock heading %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    Add User
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <fieldset>
+                            <legend>Form</legend>
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    User List
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                        <th scope="col">Name</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Actions</th>
+                        </thead>
+                        <tbody>
+                        {% for item in list %}
+                        <tr>
+                            <td>{{ item.first_name }} {{ item.last_name }}</td>
+                            <td>{{ item.username }}</td>
+                            <td>{{ item.email }}</td>
+                            <td>
+                                <a style="color:white" href="?editUserId={{ item.id }}"
+                                   class="btn btn-primary btn-circle"><i class="fas fa-pen"></i></a>
+                                <a style="color:white" href="?deleteUserId={{ item.id }}"
+                                   class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></a>
+                                </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
+
