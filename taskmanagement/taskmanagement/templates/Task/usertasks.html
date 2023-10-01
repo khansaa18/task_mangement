@@ -57,6 +57,14 @@
                                         colspan="1" style="width: 700px;" aria-sort="ascending"
                                         aria-label="Name: activate to sort column descending">Status
                                     </th>
+                                    <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1"
+                                        colspan="1" style="width: 700px;" aria-sort="ascending"
+                                        aria-label="Name: activate to sort column descending">Comment
+                                    </th>
+                                    <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1"
+                                        colspan="1" style="width: 200px;" aria-sort="ascending"
+                                        aria-label="Name: activate to sort column descending">Action
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -84,6 +92,10 @@
                                             <span class="badge badge-danger">Inactive</span>
                                         {% endif %}
                                     </td>
+                                    <td>{{ item.comments }}</td>
+                                    <td>
+                                        <a onclick="location.href='{% url 'deleteTask' taskid=item.id %}?page={{ page_obj.number }}&isUserTask=True'" style="color:white" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></a>
+                                    </td>
                                 </tr>
                                 {% endfor %}
 
@@ -94,13 +106,13 @@
                    <div class="row" style="display:contents">
                         <div class="col-sm-12 col-md-5">
                             {% if totalitems > 10 %}
-                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 10
+                                <div class="dataTables_info" id="dataTable_info_1" role="status" aria-live="polite">Showing 10
                                     of {{ totalitems }} entries
                                 </div>
                             {% endif %}
 
                             {% if totalitems <= 10 %}
-                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing
+                                <div class="dataTables_info" id="dataTable_info_2" role="status" aria-live="polite">Showing
                                     {{totalitems}}
                                     of {{ totalitems }} entries
                                 </div>

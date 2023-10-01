@@ -6,7 +6,7 @@ from .widgets import DatePickerInput
 
 
 class LoginForm(forms.Form):
-    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label="Email address")
+    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), label="Email address or Username")
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}), label="Password")
 
 
@@ -48,6 +48,7 @@ class TaskForm(forms.ModelForm):
     )
     assigned_to = forms.ChoiceField(label="Assigned To", widget=forms.Select(attrs={'class': 'form-control'}))
     priority = forms.ChoiceField(label="Priority", widget=forms.Select(attrs={'class': 'form-control'}))
+    comments = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}), label="Comments")
 
 
 class SearchForm(forms.Form):

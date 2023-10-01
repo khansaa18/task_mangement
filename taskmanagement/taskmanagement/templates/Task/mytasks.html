@@ -42,6 +42,10 @@
                                         aria-label="Name: activate to sort column descending">Status
                                     </th>
                                     <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1"
+                                        colspan="1" style="width: 145px;" aria-sort="ascending"
+                                        aria-label="Name: activate to sort column descending">Comment
+                                    </th>
+                                    <th class="sorting sorting_asc" tabindex="0" aria-controls="dataTable" rowspan="1"
                                         colspan="1" style="width: 200px;" aria-sort="ascending"
                                         aria-label="Name: activate to sort column descending">Action
                                     </th>
@@ -53,28 +57,37 @@
                                     <td>{{ item.title }}</td>
                                     <td>{{ item.due_date }}</td>
                                     <td>{% if item.priority == "High" %}
-                                            <span class="badge badge-danger">High</span>
+                                        <span class="badge badge-danger">High</span>
                                         {% endif %}
                                         {% if item.priority == "Medium" %}
-                                            <span class="badge badge-warning">Medium</span>
+                                        <span class="badge badge-warning">Medium</span>
                                         {% endif %}
                                         {% if item.priority == "Low" %}
-                                            <span class="badge badge-success">Low</span>
+                                        <span class="badge badge-success">Low</span>
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if item.is_completed == True %}
-                                            <span class="badge badge-success">Completed</span>
+                                        <span class="badge badge-success">Completed</span>
                                         {% elif item.is_in_progress == True %}
                                         <span class="badge badge-primary">In Progress</span>
                                         {% else %}
-                                            <span class="badge badge-danger">Inactive</span>
+                                        <span class="badge badge-danger">Inactive</span>
                                         {% endif %}
                                     </td>
+                                    <td>{{ item.comments }}</td>
                                     <td>
-                                        <a onclick="location.href='{% url 'startTask' taskid=item.id %}?page={{ page_obj.number }}'" style="color:white" class="btn btn-primary btn-circle"><i class="fa fa-tasks"></i></a>
-                                        <a onclick="location.href='{% url 'markCompleted' taskid=item.id %}?page={{ page_obj.number }}'" style="color:white" class="btn btn-success btn-circle"><i class="fa fa-check"></i></a>
-                                        <a onclick="location.href='{% url 'deleteTask' taskid=item.id %}?page={{ page_obj.number }}'" style="color:white" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></a>
+                                        <a onclick="location.href='{% url 'startTask' taskid=item.id %}?page={{ page_obj.number }}'"
+                                           style="color:white" class="btn btn-primary btn-circle"><i
+                                                class="fa fa-tasks"></i></a>
+                                        <a onclick="location.href='{% url 'markCompleted' taskid=item.id %}?page={{ page_obj.number }}'"
+                                           style="color:white" class="btn btn-success btn-circle"><i
+                                                class="fa fa-check"></i></a>
+                                        {% if request.session.username == "admin" %}
+                                        <a onclick="location.href='{% url 'deleteTask' taskid=item.id %}?page={{ page_obj.number }}'"
+                                           style="color:white" class="btn btn-danger btn-circle"><i
+                                                class="fas fa-trash"></i></a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -85,17 +98,18 @@
                     </div>
                     <div class="row" style="display:contents">
                         <div class="col-sm-12 col-md-5">
-                            {% if totalitems > 10 %}
-                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 10
-                                    of {{ totalitems }} entries
-                                </div>
+                            <div class="dataTables_info" id="dataTable_info_1" role="status" aria-live="polite">Showing
+                                10
+                                {% if totalitems > 10 %}
+                                of {{ totalitems }} entries
+                            </div>
                             {% endif %}
 
                             {% if totalitems <= 10 %}
-                                <div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing
-                                    {{totalitems}}
-                                    of {{ totalitems }} entries
-                                </div>
+                            <div class="dataTables_info" id="dataTable_info_2" role="status" aria-live="polite">Showing
+                                {{totalitems}}
+                                of {{ totalitems }} entries
+                            </div>
                             {% endif %}
                         </div>
                         <div class="col-sm-12 col-md-7">
@@ -128,6 +142,7 @@
             </div>
         </div>
     </div>
+</div>
 
-    {% endblock body %}
+{% endblock body %}
 

@@ -63,7 +63,8 @@
             <div class="messages" style="list-style-type:none;">
                 {% for message in messages %}
                 <li
-                {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %} role="alert">{{ message }}
+                        {% if message.tags %} class="alert alert-{{ message.tags }}" {% endif %} role="alert">{{ message
+                    }}
                 </li>
                 {% endfor %}
             </div>
